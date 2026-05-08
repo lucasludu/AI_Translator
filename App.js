@@ -47,9 +47,13 @@ export default function App() {
   const [sourceLang, setSourceLang] = useState('auto');
   const [targetLang, setTargetLang] = useState('en');
 
+  // Ref para controlar si la traducción fue por voz
+  const isVoiceInitiated = useRef(false);
+
   // Hooks usage
   const { isDarkMode, toggleTheme, colors, isLoaded } = useTheme();
   const { history, addToHistory, deleteHistoryItem, clearHistory, toggleFavorite } = useHistory();
+  
   const {
     isLoading,
     result,
@@ -58,10 +62,18 @@ export default function App() {
     isTagLoading,
     tagInfo,
     getTagExplanation
-  } = useTranslate(addToHistory);
+  } = useTranslate((newItem) => {
+    addToHistory(newItem);
+    // Si fue por voz, reproducir automáticamente
+    if (isVoiceInitiated.current) {
+      handleSpeak(newItem.traduccion);
+      isVoiceInitiated.current = false;
+    }
+  });
 
   const { isListening, startVoiceInput } = useVoiceInput((text) => {
     setInputText(text);
+    isVoiceInitiated.current = true; // Marcamos que fue por voz
     setTimeout(() => handleTranslate(text, sourceLang, targetLang), 500);
   });
 

@@ -54,15 +54,15 @@ app.post('/translate', async (req, res) => {
       REGLAS DE TRADUCCIÓN:
       1. TRADUCCIÓN OBLIGATORIA A: ${targetLang}.
       2. AUTOCORRECCIÓN: Si la frase original del usuario tiene errores ortográficos o de tipeo, corrígelos automáticamente. El campo "original" del JSON debe mostrar tu versión corregida.
-      3. Si la frase tiene múltiples interpretaciones, elige la más común en el habla cotidiana.
+      3. INTENCIÓN: Si la frase original suena a una invitación o pregunta implícita, tradúcela con la estructura gramatical correcta para preguntas en el idioma de destino (${targetLang}).
       4. CRÍTICO: La traducción DEBE ser 100% precisa, natural y gramaticalmente impecable.
 
       REGLAS DE EXPLICACIÓN:
-      1. Explica la gramática de forma sencilla (ej. "Uso del presente continuo" o "Diferencia entre Make y Do").
-      2. Si hay modismos (idioms) o phrasal verbs, identifícalos y explícalos.
-      3. Proporciona exactamente 3 ejemplos adicionales útiles que utilicen la MISMA ESTRUCTURA GRAMATICAL o VOCABULARIO CLAVE de la frase original.
-      4. IMPORTANTE: En la "traduccion" y en la "traduccion" de cada ejemplo, encierra los verbos principales entre etiquetas <v> y </v>. Ejemplo: "I <v>want</v> to <v>eat</v>".
-      5. REGLA DE ORO: La "traduccion" debe estar 100% en el idioma de destino (ej. Inglés). NO dejes palabras en español dentro de la traducción inglesa bajo ninguna circunstancia.
+      1. Explica la gramática de forma sencilla. Si es una frase corta o saludo coloquial, simplemente explica su uso y no inventes reglas gramaticales complejas.
+      2. Si hay modismos (idioms) o expresiones idiomáticas, identifícalos y explícalos.
+      3. Proporciona exactamente 3 ejemplos adicionales útiles. Si es un saludo, da otras formas comunes de usarlo.
+      4. IMPORTANTE: En la "traduccion" y en la "traduccion" de cada ejemplo, encierra los verbos principales entre etiquetas <v> y </v>.
+      5. REGLA DE ORO: La "traduccion" y la traducción de los ejemplos deben estar 100% en el idioma de destino (${targetLang}). No mezcles idiomas.
 
       REGLA DE FORMATO OBLIGATORIA:
       Responde EXCLUSIVAMENTE en formato JSON puro. No agregues texto antes ni después del bloque JSON.
