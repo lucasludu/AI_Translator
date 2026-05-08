@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "translate-pro",
+    "slug": "translate-pro",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "web": {
+    },
+    "plugins": [
+      "expo-font"
+    ]
+  }
+}
