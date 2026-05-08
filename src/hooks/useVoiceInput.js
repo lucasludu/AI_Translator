@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Platform, Alert } from 'react-native';
+import * as Speech from 'expo-speech';
 
 export const useVoiceInput = (onResult) => {
   const [isListening, setIsListening] = useState(false);
@@ -35,15 +36,23 @@ export const useVoiceInput = (onResult) => {
       setIsListening(false);
       
       let errorMessage = "Ocurrió un error con el micrófono.";
+      let voiceWarning = "";
+
       if (event.error === 'network') {
-        errorMessage = "Error de red. Si usas navegadores como Brave, prueba abrir la app en Google Chrome, ya que el dictado web suele depender de sus servidores.";
+        errorMessage = "⚠️ ERROR DE RED: Revisa tu conexión o usa Google Chrome.";
       } else if (event.error === 'not-allowed') {
-        errorMessage = "Debes dar permiso para usar el micrófono en la barra de direcciones de tu navegador.";
+        errorMessage = "🚫 PERMISO DENEGADO: Activa el micro en los ajustes del navegador.";
       } else if (event.error === 'no-speech') {
-        errorMessage = "No se detectó ningún sonido. Por favor, habla más fuerte o revisa tu micrófono.";
+        errorMessage = "🎤 ¡NO SE ESCUCHA NADA! \n\nPor favor, habla más fuerte o acerca el micrófono.";
+        voiceWarning = "No se escucha, habla más fuerte";
+      }
+
+      // Si hay una advertencia de voz, la app la dice
+      if (voiceWarning) {
+        Speech.speak(voiceWarning, { language: 'es-ES', rate: 1.0 });
       }
       
-      Alert.alert("Error de Dictado", errorMessage);
+      Alert.alert("Aviso de Voz", errorMessage);
     };
 
     recognition.onend = () => {

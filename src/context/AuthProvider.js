@@ -3,11 +3,11 @@ import {
   onAuthStateChanged, 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
+  updateProfile,
   signOut,
   sendPasswordResetEmail
 } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { auth, db } from '../config/firebase';
+import { auth } from '../config/firebase';
 import { AuthContext } from './AuthContext';
 
 export const AuthProvider = ({ children }) => {
@@ -15,22 +15,13 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
-        try {
-          // Intentar obtener perfil extendido desde Firestore
-          const userRef = doc(db, "users", firebaseUser.uid);
-          const userSnap = await getDoc(userRef);
-          
-          if (userSnap.exists()) {
-            setUser({ ...userSnap.data(), uid: firebaseUser.uid, email: firebaseUser.email });
-          } else {
-            setUser({ uid: firebaseUser.uid, email: firebaseUser.email });
-          }
-        } catch (error) {
-          console.error("Error al obtener datos del usuario:", error);
-          setUser({ uid: firebaseUser.uid, email: firebaseUser.email });
-        }
+        setUser({ 
+          uid: firebaseUser.uid, 
+          email: firebaseUser.email,
+          displayName: firebaseUser.displayName 
+        });
       } else {
         setUser(null);
       }
@@ -46,12 +37,12 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (email, password, displayName) => {
     const result = await createUserWithEmailAndPassword(auth, email, password);
-    // Crear documento en Firestore para el nuevo usuario
-    await setDoc(doc(db, "users", result.user.uid), {
-      email,
-      displayName,
-      createdAt: new Date().toISOString()
-    });
+    // Guardar el nombre directamente en el perfil de Auth (Gratis y sin Firestore)
+    await updateProfile(result.user, { displayName });
+    
+    // Forzar actualización del estado local
+    setUser({ ...result.user, displayName });
+    
     return result;
   };
 

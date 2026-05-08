@@ -155,6 +155,18 @@ function MainApp() {
             hasHistory={history.length > 0}
           />
 
+          {user?.displayName && (
+            <Animated.View 
+              entering={FadeInDown.delay(400).duration(800)} 
+              style={styles.welcomeContainer}
+            >
+              <Text style={styles.welcomeLabel}>BIENVENIDO DE NUEVO</Text>
+              <Text style={[styles.welcomeText, { color: colors.text }]}>
+                ¡Hola, {user.displayName.split(' ')[0]}! 👋
+              </Text>
+            </Animated.View>
+          )}
+
           <TranslationInput
             inputText={inputText}
             setInputText={setInputText}
@@ -332,5 +344,22 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.8)',
     fontSize: 13,
     marginTop: 2,
+  },
+  welcomeContainer: {
+    marginBottom: 25,
+    marginTop: 5,
+    paddingHorizontal: 5,
+  },
+  welcomeLabel: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#4A90E2',
+    letterSpacing: 1.5,
+    marginBottom: 5,
+  },
+  welcomeText: {
+    fontSize: 24,
+    fontWeight: '800',
+    letterSpacing: -0.5,
   },
 });

@@ -18,14 +18,15 @@ import { AuthContext } from '../../context/AuthContext';
 const LoginScreen = ({ onSwitchToRegister }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useContext(AuthContext);
+  const { login, resetPassword } = useContext(AuthContext);
 
   const handleLogin = async () => {
     if (!email || !password) {
-      setError('Por favor completa todos los campos');
+      setError('Por favor ingresa email y contraseña');
       return;
     }
     
@@ -36,9 +37,22 @@ const LoginScreen = ({ onSwitchToRegister }) => {
       await login(email, password);
     } catch (err) {
       console.error(err);
-      setError('Credenciales inválidas o error de conexión');
+      setError('Email o contraseña incorrectos');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError('Ingresa tu email para recuperar la contraseña');
+      return;
+    }
+    try {
+      await resetPassword(email);
+      alert('Se ha enviado un correo para restablecer tu contraseña');
+    } catch (err) {
+      setError('Error al enviar el correo de recuperación');
     }
   };
 
@@ -105,11 +119,24 @@ const LoginScreen = ({ onSwitchToRegister }) => {
                     placeholderTextColor="#555"
                     value={password}
                     onChangeText={setPassword}
-                    secureTextEntry
+                    secureTextEntry={!showPassword}
                     onFocus={() => setFocusedInput('password')}
                     onBlur={() => setFocusedInput(null)}
                   />
+                  <TouchableOpacity 
+                    onPress={() => setShowPassword(!showPassword)} 
+                    style={styles.eyeIcon}
+                  >
+                    <Ionicons 
+                      name={showPassword ? "eye-off-outline" : "eye-outline"} 
+                      size={20} 
+                      color={focusedInput === 'password' ? "#4A90E2" : "#666"} 
+                    />
+                  </TouchableOpacity>
                 </View>
+                <TouchableOpacity onPress={handleForgotPassword} style={styles.forgotButton}>
+                  <Text style={styles.forgotText}>¿Olvidaste tu contraseña?</Text>
+                </TouchableOpacity>
               </View>
 
               <TouchableOpacity 
@@ -287,6 +314,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
     fontSize: 13,
+  },
+  forgotButton: {
+    alignSelf: 'flex-end',
+    marginTop: 10,
+    marginRight: 4,
+  },
+  forgotText: {
+    color: '#4A90E2',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  eyeIcon: {
+    padding: 8,
+    marginLeft: 5,
   }
 });
 

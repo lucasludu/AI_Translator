@@ -13,8 +13,11 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { sharedStyles } from './Modals.styles';
+import { AuthContext } from '../../context/AuthContext';
+import { useContext } from 'react';
 
 const SettingsModal = ({ isVisible, onClose, colors, isDarkMode }) => {
+  const { user } = useContext(AuthContext);
   const [apiKey, setApiKey] = useState('');
   const [showKey, setShowKey] = useState(false);
   
@@ -75,6 +78,24 @@ const SettingsModal = ({ isVisible, onClose, colors, isDarkMode }) => {
             </View>
 
             <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.profileSection}>
+                <View style={[styles.avatarCircle, { backgroundColor: colors.accent }]}>
+                  <Text style={styles.avatarInitial}>
+                    {user?.displayName ? user.displayName.charAt(0).toUpperCase() : user?.email?.charAt(0).toUpperCase()}
+                  </Text>
+                </View>
+                <View style={styles.profileInfo}>
+                  <Text style={[styles.profileName, { color: colors.text }]}>
+                    {user?.displayName || 'Usuario'}
+                  </Text>
+                  <Text style={[styles.profileEmail, { color: colors.subtext }]}>
+                    {user?.email}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={[styles.separator, { backgroundColor: colors.border }]} />
+
               <View style={styles.section}>
                 <Text style={[styles.sectionTitle, { color: colors.text }]}>API de Groq Personalizada</Text>
                 <Text style={[styles.description, { color: isDarkMode ? '#CCC' : colors.subtext }]}>
@@ -139,9 +160,54 @@ const SettingsModal = ({ isVisible, onClose, colors, isDarkMode }) => {
 
 const styles = StyleSheet.create({
   modalCustom: {
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
     paddingHorizontal: 25,
+    maxWidth: 550,
+    width: '100%',
+    alignSelf: 'center',
+  },
+  profileSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 15,
+    marginBottom: 5,
+  },
+  avatarCircle: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...Platform.select({
+      web: { boxShadow: '0px 4px 10px rgba(0,0,0,0.1)' },
+      default: { elevation: 3 }
+    })
+  },
+  avatarInitial: {
+    color: '#FFF',
+    fontSize: 22,
+    fontWeight: '800',
+  },
+  profileInfo: {
+    marginLeft: 15,
+    flex: 1,
+  },
+  profileName: {
+    fontSize: 18,
+    fontWeight: '800',
+    letterSpacing: -0.5,
+  },
+  profileEmail: {
+    fontSize: 13,
+    marginTop: 1,
+    opacity: 0.6,
+  },
+  separator: {
+    height: 1,
+    width: '100%',
+    marginBottom: 20,
+    opacity: 0.3,
   },
   titleContainer: {
     flexDirection: 'row',

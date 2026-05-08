@@ -19,6 +19,7 @@ const RegisterScreen = ({ onSwitchToLogin }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -127,10 +128,20 @@ const RegisterScreen = ({ onSwitchToLogin }) => {
                     placeholderTextColor="#555"
                     value={password}
                     onChangeText={setPassword}
-                    secureTextEntry
+                    secureTextEntry={!showPassword}
                     onFocus={() => setFocusedInput('password')}
                     onBlur={() => setFocusedInput(null)}
                   />
+                  <TouchableOpacity 
+                    onPress={() => setShowPassword(!showPassword)} 
+                    style={styles.eyeIcon}
+                  >
+                    <Ionicons 
+                      name={showPassword ? "eye-off-outline" : "eye-outline"} 
+                      size={20} 
+                      color={focusedInput === 'password' ? "#4A90E2" : "#666"} 
+                    />
+                  </TouchableOpacity>
                 </View>
               </View>
 
@@ -290,6 +301,10 @@ const styles = StyleSheet.create({
   switchTextBold: {
     color: '#4A90E2',
     fontWeight: '700',
+  },
+  eyeIcon: {
+    padding: 8,
+    marginLeft: 5,
   },
   errorText: {
     color: '#FF5A5F',
