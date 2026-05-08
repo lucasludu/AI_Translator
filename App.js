@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import {
   StyleSheet,
   View,
@@ -8,8 +8,15 @@ import {
   KeyboardAvoidingView,
   Platform,
   Clipboard,
+  ActivityIndicator,
 } from 'react-native';
 import * as Speech from 'expo-speech';
+
+// Auth
+import { AuthProvider } from './src/context/AuthProvider';
+import { AuthContext } from './src/context/AuthContext';
+import LoginScreen from './src/screens/Auth/LoginScreen';
+import RegisterScreen from './src/screens/Auth/RegisterScreen';
 
 // Hooks
 import { useTheme } from './src/hooks/useTheme';
@@ -32,7 +39,10 @@ import PracticeModal from './src/components/Modals/PracticeModal';
 import { TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function App() {
+function MainApp() {
+  const { user, loading: authLoading, logout } = useContext(AuthContext);
+  const [authScreen, setAuthScreen] = useState('login'); // 'login' or 'register'
+
   const [inputText, setInputText] = useState('');
   const [isHistoryVisible, setIsHistoryVisible] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -51,7 +61,7 @@ export default function App() {
   const isVoiceInitiated = useRef(false);
 
   // Hooks usage
-  const { isDarkMode, toggleTheme, colors, isLoaded } = useTheme();
+  const { isDarkMode, toggleTheme, colors, isLoaded: themeLoaded } = useTheme();
   const { history, addToHistory, deleteHistoryItem, clearHistory, toggleFavorite } = useHistory();
   
   const {
@@ -64,7 +74,6 @@ export default function App() {
     getTagExplanation
   } = useTranslate((newItem) => {
     addToHistory(newItem);
-    // Si fue por voz, reproducir automáticamente
     if (isVoiceInitiated.current) {
       handleSpeak(newItem.traduccion);
       isVoiceInitiated.current = false;
@@ -73,14 +82,14 @@ export default function App() {
 
   const { isListening, startVoiceInput } = useVoiceInput((text) => {
     setInputText(text);
-    isVoiceInitiated.current = true; // Marcamos que fue por voz
+    isVoiceInitiated.current = true;
     setTimeout(() => handleTranslate(text, sourceLang, targetLang), 500);
   });
 
   const handleSwapLanguages = () => {
     if (sourceLang === 'auto') {
       setSourceLang(targetLang);
-      setTargetLang('es'); // Default swap
+      setTargetLang('es');
     } else {
       const prevSource = sourceLang;
       setSourceLang(targetLang);
@@ -109,7 +118,21 @@ export default function App() {
     await getTagExplanation(tag, phrase);
   };
 
-  if (!isLoaded) return null;
+  if (!themeLoaded || authLoading) {
+    return (
+      <View style={[styles.loadingContainer, { backgroundColor: '#121212' }]}>
+        <ActivityIndicator size="large" color="#4A90E2" />
+      </View>
+    );
+  }
+
+  if (!user) {
+    return authScreen === 'login' ? (
+      <LoginScreen onSwitchToRegister={() => setAuthScreen('register')} />
+    ) : (
+      <RegisterScreen onSwitchToLogin={() => setAuthScreen('login')} />
+    );
+  }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.bg }]}>
@@ -128,6 +151,7 @@ export default function App() {
             toggleTheme={toggleTheme}
             onOpenHistory={() => setIsHistoryVisible(true)}
             onOpenSettings={() => setIsSettingsVisible(true)}
+            onLogout={logout}
             hasHistory={history.length > 0}
           />
 
@@ -251,9 +275,22 @@ export default function App() {
   );
 }
 
+export default function App() {
+  return (
+    <AuthProvider>
+      <MainApp />
+    </AuthProvider>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   scrollContent: {
     padding: 20,
