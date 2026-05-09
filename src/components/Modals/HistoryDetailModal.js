@@ -39,6 +39,18 @@ const HistoryDetailModal = ({
       color: colors.text,
       textAlign: 'center',
     },
+    pronunciationBox: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 10,
+      opacity: 0.7,
+    },
+    pronunciationText: {
+      fontSize: 15,
+      color: colors.subtext,
+      fontStyle: 'italic',
+      marginLeft: 6,
+    },
     speakButton: {
       backgroundColor: '#4A90E2',
       flexDirection: 'row',
@@ -160,6 +172,13 @@ const HistoryDetailModal = ({
               {renderHighlightedText(item.original, styles.originalText)}
               <Ionicons name="arrow-down" size={20} color="#4A90E2" style={{ marginVertical: 10 }} />
               {renderHighlightedText(item.traduccion, styles.translationText)}
+              
+              {item.pronunciacion && (
+                <View style={styles.pronunciationBox}>
+                  <Ionicons name="megaphone-outline" size={16} color="#4A90E2" />
+                  <Text style={styles.pronunciationText}>{item.pronunciacion}</Text>
+                </View>
+              )}
               
               <TouchableOpacity 
                 style={styles.speakButton}

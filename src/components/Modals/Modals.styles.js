@@ -11,22 +11,25 @@ export const sharedStyles = (colors, isDarkMode) => StyleSheet.create({
   },
   modalContent: {
     backgroundColor: colors.card,
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
+    borderTopLeftRadius: 35,
+    borderTopRightRadius: 35,
     padding: 24,
-    maxHeight: '85%',
+    paddingTop: 10, // Menos espacio arriba para que el indicador de "drag" se vea bien si existiera
+    maxHeight: '90%',
     ...Platform.select({
       web: {
-        boxShadow: '0px -4px 10px rgba(0, 0, 0, 0.1)',
+        boxShadow: '0px -10px 30px rgba(0, 0, 0, 0.2)',
+        borderTopWidth: 1,
+        borderColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'transparent',
       },
       default: {
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: -4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
+        shadowOffset: { width: 0, height: -10 },
+        shadowOpacity: 0.2,
+        shadowRadius: 20,
       }
     }),
-    elevation: 20,
+    elevation: 25,
   },
   modalHeader: {
     flexDirection: 'row',

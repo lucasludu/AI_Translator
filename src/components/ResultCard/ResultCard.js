@@ -59,6 +59,13 @@ const ResultCard = ({
       
       {renderHighlightedText(result.traduccion, styles.mainTranslation)}
       
+      {result.pronunciacion && (
+        <View style={styles.pronunciationBox}>
+          <Ionicons name="megaphone-outline" size={14} color="#4A90E2" />
+          <Text style={styles.pronunciationText}>{result.pronunciacion}</Text>
+        </View>
+      )}
+      
       <View style={styles.tutorTipsBox}>
         <View style={styles.tipHeader}>
           <Ionicons name="bulb-outline" size={18} color="#4A90E2" />

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Modal, Pressable, TextInput, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Modal, Pressable, TextInput, StyleSheet, Image, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInDown, FadeInLeft } from 'react-native-reanimated';
 import { sharedStyles as createSharedStyles } from './Modals.styles';
@@ -26,101 +26,137 @@ const HistoryModal = ({
     searchContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: isDarkMode ? '#333' : '#F0F2F5',
-      borderRadius: 12,
-      paddingHorizontal: 12,
-      marginBottom: 15,
+      backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : '#F0F2F5',
+      borderRadius: 15,
+      paddingHorizontal: 15,
+      marginBottom: 20,
+      borderWidth: 1,
+      borderColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'transparent',
     },
     searchInput: {
       flex: 1,
-      paddingVertical: 10,
-      marginLeft: 8,
-      fontSize: 15,
+      paddingVertical: 12,
+      marginLeft: 10,
+      fontSize: 16,
       color: colors.text,
     },
     filtersContainer: {
-      marginBottom: 15,
+      marginBottom: 20,
     },
     filterTag: {
-      paddingHorizontal: 15,
-      paddingVertical: 8,
-      borderRadius: 20,
-      backgroundColor: isDarkMode ? '#333' : '#F0F2F5',
-      marginRight: 8,
+      paddingHorizontal: 18,
+      paddingVertical: 10,
+      borderRadius: 25,
+      backgroundColor: isDarkMode ? '#2A2A2A' : '#FFF',
+      marginRight: 10,
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: isDarkMode ? '#333' : '#EEE',
+      ...Platform.select({
+        web: { boxShadow: '0px 2px 5px rgba(0,0,0,0.05)' },
+        default: { elevation: 2 }
+      })
     },
     filterTagActive: {
       backgroundColor: '#4A90E2',
+      borderColor: '#4A90E2',
     },
     filterTagText: {
       color: colors.subtext,
-      fontWeight: '600',
+      fontWeight: '700',
+      fontSize: 13,
     },
     filterTagTextActive: {
       color: '#FFF',
     },
     historyItemWrapper: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: 10,
+      marginBottom: 12,
     },
     historyItem: {
       backgroundColor: colors.card,
-      borderRadius: 16,
-      padding: 15,
+      borderRadius: 20,
+      padding: 18,
       flexDirection: 'row',
       alignItems: 'center',
-      flex: 1,
       borderWidth: 1,
-      borderColor: colors.border,
-      position: 'relative',
+      borderColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(74,144,226,0.1)',
+      ...Platform.select({
+        web: { boxShadow: '0px 4px 10px rgba(0,0,0,0.05)' },
+        default: { elevation: 3 }
+      })
     },
     historyTextContainer: {
       flex: 1,
-      paddingRight: 10,
+    },
+    langIndicator: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 6,
+    },
+    langCode: {
+      fontSize: 10,
+      fontWeight: '800',
+      color: '#4A90E2',
+      marginLeft: 5,
+      textTransform: 'uppercase',
     },
     historyOriginal: {
-      fontSize: 16,
-      fontWeight: '600',
+      fontSize: 17,
+      fontWeight: '700',
       color: colors.text,
-      marginBottom: 2,
+      marginBottom: 4,
+      letterSpacing: -0.3,
     },
     historyTranslation: {
-      fontSize: 14,
+      fontSize: 15,
       color: colors.subtext,
+      lineHeight: 20,
+    },
+    rightActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginLeft: 10,
     },
     favoriteButtonInside: {
-      padding: 8,
-      marginLeft: 5,
+      padding: 10,
+      borderRadius: 12,
+      backgroundColor: isDarkMode ? 'rgba(255,90,95,0.1)' : '#FFF0F0',
     },
     deleteMiniButton: {
-      padding: 8,
-      marginLeft: 5,
-      opacity: 0.4,
+      padding: 10,
+      marginLeft: 8,
+      borderRadius: 12,
+      backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : '#F5F7FA',
     },
     clearHistoryButton: {
-      marginTop: 20,
-      padding: 15,
+      marginTop: 25,
+      padding: 18,
       alignItems: 'center',
-      backgroundColor: isDarkMode ? '#331a1a' : '#FFF0F0',
-      borderRadius: 15,
-      marginBottom: 20,
+      backgroundColor: isDarkMode ? 'rgba(255,90,95,0.05)' : '#FFF0F0',
+      borderRadius: 18,
+      marginBottom: 30,
+      borderWidth: 1,
+      borderColor: isDarkMode ? 'rgba(255,90,95,0.1)' : 'transparent',
     },
     clearHistoryText: {
       color: '#FF5A5F',
-      fontWeight: '600',
-      fontSize: 16,
+      fontWeight: '800',
+      fontSize: 15,
+      letterSpacing: 0.5,
     },
     emptyHistory: {
-      padding: 40,
+      paddingVertical: 60,
       justifyContent: 'center',
       alignItems: 'center',
-      opacity: 0.5,
     },
     emptyHistoryText: {
-      marginTop: 15,
-      fontSize: 16,
+      marginTop: 20,
+      fontSize: 17,
+      fontWeight: '600',
       color: colors.subtext,
       textAlign: 'center',
+      opacity: 0.7,
     },
   });
 
@@ -152,6 +188,7 @@ const HistoryModal = ({
           entering={FadeInDown.springify()}
           style={sharedStyles.modalContent}
         >
+          <View style={{ width: 40, height: 5, backgroundColor: isDarkMode ? '#333' : '#EEE', borderRadius: 10, alignSelf: 'center', marginBottom: 15 }} />
           <View style={sharedStyles.modalHeader}>
             <View>
               <Text style={sharedStyles.modalSubtitle}>Tus traducciones</Text>
@@ -236,54 +273,69 @@ const HistoryModal = ({
 
           {history.length > 0 ? (
             <ScrollView showsVerticalScrollIndicator={false}>
-              {filteredHistory.map((item, index) => (
-                <Animated.View 
-                  key={item.id}
-                  entering={FadeInLeft.delay(index * 50)}
-                >
-                  <View style={styles.historyItemWrapper}>
-                    <View style={styles.historyItem}>
-                      <TouchableOpacity 
-                        style={styles.historyTextContainer}
-                        onPress={() => onSelectItem(item)}
-                      >
-                        <Text style={styles.historyOriginal} numberOfLines={1}>
-                          {item.original.replace(/<v[^>]*>|<\/v>/g, '')}
-                        </Text>
-                        <Text style={styles.historyTranslation} numberOfLines={1}>
-                          {item.traduccion.replace(/<v[^>]*>|<\/v>/g, '')}
-                        </Text>
-                      </TouchableOpacity>
-
-                      <TouchableOpacity 
-                        style={styles.favoriteButtonInside}
-                        onPress={() => onToggleFavorite(item.id)}
-                      >
-                        <Ionicons 
-                          name={item.isFavorite ? "heart" : "heart-outline"} 
-                          size={20} 
-                          color="#FF5A5F" 
-                        />
-                      </TouchableOpacity>
+              {filteredHistory.map((item, index) => {
+                const langInfo = getLanguage(item.targetLang);
+                return (
+                  <Animated.View 
+                    key={item.id}
+                    entering={FadeInLeft.delay(index * 50)}
+                  >
+                    <View style={styles.historyItemWrapper}>
+                      <View style={styles.historyItem}>
+                        <TouchableOpacity 
+                          style={styles.historyTextContainer}
+                          onPress={() => onSelectItem(item)}
+                        >
+                          <View style={styles.langIndicator}>
+                            <Image 
+                              source={{ uri: langInfo.flag }} 
+                              style={{ width: 14, height: 10, borderRadius: 1 }} 
+                            />
+                            <Text style={styles.langCode}>{langInfo.name}</Text>
+                          </View>
+                          <Text style={styles.historyOriginal} numberOfLines={2}>
+                            {item.original.replace(/<v[^>]*>|<\/v>/g, '')}
+                          </Text>
+                          <Text style={styles.historyTranslation} numberOfLines={2}>
+                            {item.traduccion.replace(/<v[^>]*>|<\/v>/g, '')}
+                          </Text>
+                        </TouchableOpacity>
+  
+                        <View style={styles.rightActions}>
+                          <TouchableOpacity 
+                            style={styles.favoriteButtonInside}
+                            onPress={() => onToggleFavorite(item.id)}
+                          >
+                            <Ionicons 
+                              name={item.isFavorite ? "heart" : "heart-outline"} 
+                              size={18} 
+                              color="#FF5A5F" 
+                            />
+                          </TouchableOpacity>
+                          
+                          <TouchableOpacity 
+                            style={styles.deleteMiniButton}
+                            onPress={() => onDeleteItem(item.id)}
+                          >
+                            <Ionicons name="trash-outline" size={18} color={isDarkMode ? "#AAA" : "#666"} />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
                     </View>
-                    
-                    <TouchableOpacity 
-                      style={styles.deleteMiniButton}
-                      onPress={() => onDeleteItem(item.id)}
-                    >
-                      <Ionicons name="close-outline" size={20} color={isDarkMode ? "#AAA" : "#666"} />
-                    </TouchableOpacity>
-                  </View>
-                </Animated.View>
-              ))}
+                  </Animated.View>
+                );
+              })}
               <TouchableOpacity style={styles.clearHistoryButton} onPress={onClearHistory}>
-                <Text style={styles.clearHistoryText}>Borrar todo el historial</Text>
+                <Ionicons name="trash-bin-outline" size={20} color="#FF5A5F" style={{ marginBottom: 5 }} />
+                <Text style={styles.clearHistoryText}>LIMPIAR TODO EL HISTORIAL</Text>
               </TouchableOpacity>
             </ScrollView>
           ) : (
             <View style={styles.emptyHistory}>
-              <Ionicons name="time-outline" size={64} color="#EEE" />
-              <Text style={styles.emptyHistoryText}>No tienes traducciones guardadas</Text>
+              <View style={{ backgroundColor: isDarkMode ? '#252525' : '#F0F2F5', padding: 30, borderRadius: 50, marginBottom: 10 }}>
+                <Ionicons name="time-outline" size={60} color={isDarkMode ? "#444" : "#CCC"} />
+              </View>
+              <Text style={styles.emptyHistoryText}>Tu historial está vacío</Text>
             </View>
           )}
         </Animated.View>

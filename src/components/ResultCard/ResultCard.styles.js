@@ -44,7 +44,20 @@ export const styles = (colors, isDarkMode) => StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: colors.text,
+    marginBottom: 8,
+  },
+  pronunciationBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 20,
+    paddingHorizontal: 4,
+  },
+  pronunciationText: {
+    fontSize: 14,
+    color: isDarkMode ? '#AAA' : '#666',
+    fontStyle: 'italic',
+    marginLeft: 6,
+    letterSpacing: 0.5,
   },
   tutorTipsBox: {
     backgroundColor: isDarkMode ? '#252525' : '#F0F7FF',

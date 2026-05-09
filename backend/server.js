@@ -63,6 +63,7 @@ app.post('/translate', async (req, res) => {
       3. Proporciona exactamente 3 ejemplos adicionales útiles. Si es un saludo, da otras formas comunes de usarlo.
       4. IMPORTANTE: En la "traduccion" y en la "traduccion" de cada ejemplo, encierra los verbos principales entre etiquetas <v> y </v>.
       5. REGLA DE ORO: La "traduccion" y la traducción de los ejemplos deben estar 100% en el idioma de destino (${targetLang}). No mezcles idiomas.
+      6. PRONUNCIACIÓN: Incluye un campo "pronunciacion" con una transcripción fonética amigable para hispanohablantes de la "traduccion" completa. Ejemplo: si es "Hello world", pon "je-lóu uór-ld".
 
       REGLA DE FORMATO OBLIGATORIA:
       Responde EXCLUSIVAMENTE en formato JSON puro. No agregues texto antes ni después del bloque JSON.
@@ -71,6 +72,7 @@ app.post('/translate', async (req, res) => {
       {
         "original": "Frase original con <v>verbos</v>",
         "traduccion": "Translation with <v>verbs</v>",
+        "pronunciacion": "Transcripción fonética",
         "explicacion": "Explicación breve",
         "ejemplos": [
           {"frase": "Ejemplo original con <v>verbos</v>", "traduccion": "Example with <v>verbs</v>"}
