@@ -22,7 +22,7 @@ if (!DEFAULT_API_KEY) {
 const getGroqClient = (userApiKey) => {
   const key = userApiKey || DEFAULT_API_KEY;
   if (!key || key === 'MISSING_KEY') return null;
-  
+
   return new OpenAI({
     apiKey: key,
     baseURL: "https://api.groq.com/openai/v1"
@@ -39,7 +39,7 @@ app.post('/translate', async (req, res) => {
 
   const groq = getGroqClient(userApiKey);
   if (!groq) {
-    return res.status(500).json({ 
+    return res.status(500).json({
       error: 'API Key de Groq no configurada',
       details: 'El servidor no tiene una clave por defecto y no has ingresado una propia en Configuración.'
     });
@@ -98,16 +98,16 @@ app.post('/translate', async (req, res) => {
       model: "llama-3.3-70b-versatile",
       response_format: { type: "json_object" }
     });
-    
+
     let responseText = completion.choices[0].message.content;
     responseText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
-    
+
     const jsonResponse = JSON.parse(responseText);
     res.json(jsonResponse);
 
   } catch (error) {
     console.error('Server Error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Error en el servicio de traducción',
       details: error.message.includes('API key') ? 'La API Key ingresada parece ser inválida.' : error.message
     });
@@ -164,6 +164,8 @@ app.post('/explain-tag', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on http://0.0.0.0:${PORT}`);
+
+// Quitamos el '0.0.0.0' para que Render lo maneje automáticamente
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
